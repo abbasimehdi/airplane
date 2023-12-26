@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Schmas\Constants\BaseConstants;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -18,9 +20,10 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        BaseConstants::PASSPORT_ID,
+        BaseConstants::NAME,
+        BaseConstants::EMAIL,
+        BaseConstants::PASSWORD,
     ];
 
     /**
@@ -29,8 +32,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        BaseConstants::PASSWORD,
+        BaseConstants::REMEMBER_TOKEN,
     ];
 
     /**
@@ -39,7 +42,24 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        BaseConstants::EMAIL_VERIFIED_AT => 'datetime',
+        BaseConstants::PASSWORD => 'hashed',
     ];
+
+    /**
+     * @param Builder $builder
+     * @return void
+     */
+    public function scopeFindUser(Builder $builder): void
+    {
+        $builder->where(BaseConstants::PASSPORT_ID, \request()->route('passportId'));
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class, 'user_id', 'id');
+    }
 }
