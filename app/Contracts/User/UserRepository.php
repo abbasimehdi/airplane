@@ -23,8 +23,9 @@ class UserRepository extends BaseRepository
      */
     public function show(int $passportId): JsonResponse
     {
+        $userTickets = $this->getUserTickets();
+
         // Sort array by Bubble sort algorithm
-        $userTickets = User::findUser()->first()->tickets;
         for ($i = count($userTickets) - 1; $i >= 0; $i--) {
             for ($j = 0; $j < $i; $j++) {
                 if (strtoupper($userTickets[$i]->destination) == strtoupper($userTickets[$j]->origin)) {
@@ -36,5 +37,13 @@ class UserRepository extends BaseRepository
         }
 
         return response()->json([$userTickets->first()->origin, $userTickets->last()->destination], 200);
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getUserTickets(): mixed
+    {
+        return User::findUser()->first()->tickets;
     }
 }
