@@ -17,8 +17,8 @@ class TicketFactory extends Factory
     public function definition(): array
     {
         return [
-            'origin' => fake()->city(),
-            'destination' => fake()->city(),
+            'origin' => strtoupper(fake()->city()),
+            'destination' => strtoupper(fake()->city()),
             'start_date'  => fake()->date,
             'end_date'  => fake()->date,
         ];

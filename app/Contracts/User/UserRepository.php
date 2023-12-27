@@ -20,7 +20,7 @@ class UserRepository extends BaseRepository
     protected $userTicketsList;
     protected $data;
     protected $origin;
-    protected array $destination;
+    protected $destination;
 
     /**
      * @return mixed
@@ -47,7 +47,8 @@ class UserRepository extends BaseRepository
         return (new BaseListCollection(
             collect([
                 BaseConstants::ORIGIN      => $this->origin[BaseConstants::ORIGIN],
-                BaseConstants::DESTINATION => $this->destination[BaseConstants::DESTINATION]
+                BaseConstants::DESTINATION =>
+                    $this->destination[BaseConstants::DESTINATION] ?? $this->origin[BaseConstants::DESTINATION]
             ])
         ))
             ->response()
