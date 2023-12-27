@@ -3,12 +3,23 @@
 namespace App\Contracts\User;
 
 use App\Contracts\Base\BaseRepository;
+use App\Http\Resources\BaseListCollection;
 use App\Models\User;
+use App\Traits\SortData;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class UserRepository extends BaseRepository
 {
+    use SortData;
+    protected $userTickets;
+    protected $keys;
+    protected $length;
+    protected array $destination;
+    protected $userTicketsList;
+    protected $data;
+
+
     /**
      * @return mixed
      */
@@ -23,20 +34,24 @@ class UserRepository extends BaseRepository
      */
     public function show(int $passportId): JsonResponse
     {
-        $userTickets = $this->getUserTickets();
+        $this->userTickets = $this->getUserTickets();
+        $this->length = count($this->userTickets);
+        $this->userTicketsList = $this->userTickets;
+        $this->data = $this->userTickets->toArray();
 
-        // Sort array by Bubble sort algorithm
-        for ($i = count($userTickets) - 1; $i >= 0; $i--) {
-            for ($j = 0; $j < $i; $j++) {
-                if (strtoupper($userTickets[$i]->destination) == strtoupper($userTickets[$j]->origin)) {
-                    $temp = $userTickets[$i];
-                    $userTickets[$i] = $userTickets[$j];
-                    $userTickets[$j] = $temp;
-                }
-            }
-        }
+        // Sort data by Bubble sort algorithm
+        $this->sortByBubble();
 
-        return response()->json([$userTickets->first()->origin, $userTickets->last()->destination], 200);
+        $this->filerData();
+
+        return (new BaseListCollection(
+            collect([
+                'origin'      => $this->data->first()['origin'],
+                'destination' => $this->data->last()['destination']
+            ])
+        ))
+            ->response()
+            ->setStatusCode(ResponseAlias::HTTP_OK);
     }
 
     /**
@@ -45,5 +60,19 @@ class UserRepository extends BaseRepository
     private function getUserTickets(): mixed
     {
         return User::findUser()->first()->tickets;
+    }
+
+    /**
+     * @return bool
+     */
+    private function filerData(): bool
+    {
+        if ($key = array_search($this->destination, $this->data) !== false) {
+            unset($this->data[$key]);
+            array_push($this->data, $this->destination);
+            $this->data = collect($this->data);
+        }
+
+        return true;
     }
 }
