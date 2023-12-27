@@ -76,7 +76,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"abbasimehdi35@gmail.com\",\n    \"password\": \"123456\"\n}",
+							"raw": "{\n    \"email\": \"abbasimehdi325@gmail.com\",\n    \"password\": \"123456\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -138,12 +138,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/{{prefix}}/ticket",
+							"raw": "{{url}}/{{prefix}}/{{version}}/ticket",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"{{prefix}}",
+								"{{version}}",
 								"ticket"
 							]
 						}
@@ -189,12 +190,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/{{prefix}}/user/12345678",
+							"raw": "{{url}}/{{prefix}}/{{version}}/user/12345678",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"{{prefix}}",
+								"{{version}}",
 								"user",
 								"12345678"
 							]
@@ -243,6 +245,11 @@
 		},
 		{
 			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "version",
 			"value": "",
 			"type": "string"
 		}
