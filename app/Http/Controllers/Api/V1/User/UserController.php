@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api\V1\User;
 
 use App\Contracts\User\UserInterface;
 use App\Http\Controllers\Controller;
-use App\userTickets;
+use App\Models\Ticket;
+use App\Traits\userTickets;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+
 class UserController extends Controller
 {
     use userTickets;
@@ -21,7 +23,7 @@ class UserController extends Controller
             return response()->json(['message' => __('text.user-has-not-ticket')], ResponseAlias::HTTP_NOT_FOUND);
         }
 
-       return $this->userInterface->show($passportId);
+        return $this->userInterface->show($passportId);
     }
 
     /**

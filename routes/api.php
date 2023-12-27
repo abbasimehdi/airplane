@@ -18,7 +18,7 @@ Route::group(['prefix' => 'auth'], function($router) {
     $router->post('/login', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'login']);
 });
 
-Route::middleware(['auth:api'])->group(function ($router) {
+Route::prefix('v1')->middleware(['auth:api'])->group(function ($router) {
     $router->Apiresource('ticket', TicketController::class);
     $router->get('user/{passportId}', [\App\Http\Controllers\Api\V1\User\UserController::class, 'show'])
         ->middleware('checkPassportIdExist');
