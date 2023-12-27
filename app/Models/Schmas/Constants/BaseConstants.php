@@ -23,4 +23,5 @@ class BaseConstants
     const ID = "id";
     const PASSPORT_ID_REQUEST = "passportId";
     const DESTINATION = "destination";
+    const EMAIl_VERIFIED_AT = 'email_verified_at';
 }

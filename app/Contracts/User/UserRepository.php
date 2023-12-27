@@ -20,7 +20,7 @@ class UserRepository extends BaseRepository
     protected $userTicketsList;
     protected $data;
     protected $origin;
-    protected array $destination;
+    protected $destination;
 
     /**
      * @return mixed
