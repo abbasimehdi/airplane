@@ -3,12 +3,25 @@
 namespace App\Contracts\User;
 
 use App\Contracts\Base\BaseRepository;
+use App\Http\Resources\BaseListCollection;
+use App\Models\Schmas\Constants\BaseConstants;
 use App\Models\User;
+use App\Traits\SortData;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class UserRepository extends BaseRepository
 {
+    use SortData;
+
+    protected $userTickets;
+    protected $keys;
+    protected $length;
+    protected $userTicketsList;
+    protected $data;
+    protected $origin;
+    protected array $destination;
+
     /**
      * @return mixed
      */
@@ -23,20 +36,22 @@ class UserRepository extends BaseRepository
      */
     public function show(int $passportId): JsonResponse
     {
-        $userTickets = $this->getUserTickets();
+        $this->userTickets = $this->getUserTickets();
+        $this->length = count($this->userTickets);
+        $this->userTicketsList = $this->userTickets;
+        $this->data = $this->userTickets->toArray();
 
-        // Sort array by Bubble sort algorithm
-        for ($i = count($userTickets) - 1; $i >= 0; $i--) {
-            for ($j = 0; $j < $i; $j++) {
-                if (strtoupper($userTickets[$i]->destination) == strtoupper($userTickets[$j]->origin)) {
-                    $temp = $userTickets[$i];
-                    $userTickets[$i] = $userTickets[$j];
-                    $userTickets[$j] = $temp;
-                }
-            }
-        }
+        // Sort data by Bubble sort algorithm
+        $this->sortByBubble();
 
-        return response()->json([$userTickets->first()->origin, $userTickets->last()->destination], 200);
+        return (new BaseListCollection(
+            collect([
+                BaseConstants::ORIGIN      => $this->origin[BaseConstants::ORIGIN],
+                BaseConstants::DESTINATION => $this->destination[BaseConstants::DESTINATION]
+            ])
+        ))
+            ->response()
+            ->setStatusCode(ResponseAlias::HTTP_OK);
     }
 
     /**

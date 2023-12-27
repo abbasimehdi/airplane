@@ -52,7 +52,7 @@ class User extends Authenticatable
      */
     public function scopeFindUser(Builder $builder): void
     {
-        $builder->where(BaseConstants::PASSPORT_ID, \request()->route('passportId'));
+        $builder->where(BaseConstants::PASSPORT_ID, \request()->route(BaseConstants::PASSPORT_ID_REQUEST));
     }
 
     /**
@@ -60,6 +60,6 @@ class User extends Authenticatable
      */
     public function tickets(): HasMany
     {
-        return $this->hasMany(Ticket::class, 'user_id', 'id');
+        return $this->hasMany(Ticket::class, BaseConstants::USER_ID, BaseConstants::ID);
     }
 }
